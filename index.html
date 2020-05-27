@@ -1,0 +1,178 @@
+<html>
+
+<head>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/all.min.css" rel="stylesheet">
+    <style>
+        .tree,
+        .tree ul {
+            list-style: none
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
+        <a class="navbar-brand" href="#">Admin</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-link"></i> Preview</a>
+                </li>
+            </ul>
+            <form class="form-inline mt-0 mb-0">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-lock"></i>
+                    Authorize</button>
+                <button class="btn btn-outline-success my-2 ml-2 my-sm-0" type="submit"><i class="fab fa-github"></i>
+                    Browse</button>
+                <button class="btn btn-outline-success my-2 ml-2 my-sm-0" type="submit"><i
+                        class="fas fa-sign-out-alt"></i>
+                    {username}</button>
+
+            </form>
+        </div>
+    </nav>
+
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <h3 class="ml-3">Files
+                <button class='btn btn-outline-primary float-right'><i class="fas fa-plus"></i></button>
+            </h3>
+            <ul id="tree1" class="pl-3">
+
+                <li>TECH
+
+                    <ul class="pl-3">
+                        <li>Company Maintenance</li>
+                        <li>Employees
+                            <ul class="pl-3">
+                                <li>Reports
+                                    <ul class="pl-3">
+                                        <li>Report1</li>
+                                        <li>Report2</li>
+                                        <li>Report3</li>
+                                    </ul>
+                                </li>
+                                <li>Employee Maint.</li>
+                            </ul>
+                        </li>
+                        <li>Human Resources</li>
+                    </ul>
+                </li>
+                <li>XRP
+                    <ul class="pl-3">
+                        <li>Company Maintenance</li>
+                        <li>Employees
+                            <ul class="pl-3">
+                                <li>Reports
+                                    <ul class="pl-3">
+                                        <li>Report1</li>
+                                        <li>Report2</li>
+                                        <li>Report3</li>
+                                    </ul>
+                                </li>
+                                <li>Employee Maint.</li>
+                            </ul>
+                        </li>
+                        <li>Human Resources</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6 themed-grid-col">
+            <h1 class="justify-content-between align-items-center">
+                <span>Header Text
+                    <button class='btn btn-outline-primary float-right'><i class="fas fa-expand-alt"></i></button>
+                </span>
+            </h1>
+            <div class="border border-success h-100 mb-3">Markdown Editor</div>
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-file-upload"></i></button>
+            <button type="button" class="btn btn-outline-danger float-right"><i class="fas fa-trash"></i></button>
+            <button type="button" class="btn btn-outline-success mr-2 float-right"><i class="fas fa-save"></i></button>
+
+        </div>
+        <div class="col-md-3 themed-grid-col">
+            <h3>Assets</h3>
+        </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                var openedClass = 'fas fa-folder-open mr-1';
+                var closedClass = 'fas fa-folder mr-1';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                };
+
+                //initialize each of the top levels
+                var tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    var branch = $(this); //li with children ul
+                    branch.prepend("<i class='" + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            var icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                tree.find('li').not(":has(ul)").each(function () {
+                    var branch = $(this); //li with children ul
+                    branch.prepend("<i class='fas fa-file mr-1'></i>");
+                });
+                // $("div").not(":has(img)") 
+
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        //Initialization of treeviews
+
+        $('#tree1').treed();
+
+        $('#tree2').treed({ openedClass: 'glyphicon-folder-open', closedClass: 'glyphicon-folder-close' });
+
+        $('#tree3').treed({ openedClass: 'glyphicon-chevron-right', closedClass: 'glyphicon-chevron-down' });
+
+    </script>
+</body>
+
+</html>
